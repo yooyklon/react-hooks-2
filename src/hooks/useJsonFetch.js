@@ -12,14 +12,13 @@ export default function useJsonFetch(url, options) {
     } else {
       fetch(url)
         .then(response => {
-          if (response.status !== 200) {
-            throw new Error('Ошибка ответа');
-          } else {
-            try {
-              return response.json();
-            } catch (e) {
-              setError('Ошибка парсинга');
+          try {
+            if (!response.ok) {
+              throw new Error(response.statusText);
             }
+            return response.json();
+          } catch (e) {
+            setError(e.message);
           }
         })
         .then(data => setData(data))
